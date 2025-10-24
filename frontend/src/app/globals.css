@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@layer theme {
+  :root {
+    --color-background: white;
+    --color-foreground: #0a0a0a;
+    --color-muted-foreground: #737373;
+  }
+
+  .dark {
+    --color-background: #0a0a0a;
+    --color-foreground: #ededed;
+    --color-muted-foreground: #a3a3a3;
+  }
+}
+
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+}
