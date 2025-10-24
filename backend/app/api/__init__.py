@@ -1,11 +1,10 @@
 from fastapi import APIRouter
+from app.api.endpoints import admin
 
 api_router = APIRouter()
 
-# Import and include routers here
-# Example:
-# from app.api.endpoints import videos
-# api_router.include_router(videos.router, prefix="/videos", tags=["videos"])
+# Include admin router
+api_router.include_router(admin.router, prefix="/admin", tags=["admin"])
 
 
 @api_router.get("/ping")
