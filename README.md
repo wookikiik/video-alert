@@ -74,6 +74,24 @@ npm run dev
 - Frontend runs on port 3000
 - API documentation available at http://localhost:8000/docs
 
+### Development Guides
+
+For detailed setup instructions:
+- **Backend Development**: See [docs/DEV_SETUP_BACKEND.md](docs/DEV_SETUP_BACKEND.md)
+- **Frontend Development**: See [docs/DEV_SETUP_FRONTEND.md](docs/DEV_SETUP_FRONTEND.md)
+
+### Quick Start for Developers
+
+**Backend**:
+```bash
+./scripts/dev_backend.sh
+```
+
+**Frontend**:
+```bash
+./scripts/dev_frontend.sh
+```
+
 ## License
 
 MIT
