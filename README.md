@@ -79,8 +79,14 @@ npm run dev
 For detailed setup instructions:
 - **Backend Development**: See [docs/DEV_SETUP_BACKEND.md](docs/DEV_SETUP_BACKEND.md)
 - **Frontend Development**: See [docs/DEV_SETUP_FRONTEND.md](docs/DEV_SETUP_FRONTEND.md)
+- **Environment Checklist**: See [docs/DEV_ENV_CHECKLIST.md](docs/DEV_ENV_CHECKLIST.md)
 
 ### Quick Start for Developers
+
+**Verify Development Environment**:
+```bash
+./scripts/check_dev_env.sh
+```
 
 **Backend**:
 ```bash
