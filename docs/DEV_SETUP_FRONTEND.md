@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions for setting up the Next.js frontend development environment for Video Alert.
 
+> 💡 **Quick Verification**: After setup, run `./scripts/check_frontend_env.sh` to verify your environment is correctly configured. See [DEV_ENV_CHECKLIST.md](DEV_ENV_CHECKLIST.md) for the complete checklist.
+
 ## Prerequisites
 
 ### Required Software
@@ -469,6 +471,25 @@ nano frontend/.env.local  # or use your preferred editor
 - [ ] Frontend dev server running on port 3000
 - [ ] Can access [http://localhost:3000](http://localhost:3000)
 - [ ] API health check responds: [http://localhost:8000/health](http://localhost:8000/health)
+
+**Automated Verification**:
+
+Run the environment verification script to check all requirements:
+```bash
+./scripts/check_frontend_env.sh
+```
+
+This will verify:
+- Node.js installation and version
+- Package manager configuration
+- Dependencies installation
+- Environment variables
+- Configuration files
+- Application structure
+- Port availability
+- Backend connectivity
+
+For the complete verification checklist, see [DEV_ENV_CHECKLIST.md](DEV_ENV_CHECKLIST.md).
 
 ## Additional Resources
 

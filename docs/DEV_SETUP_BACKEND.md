@@ -2,6 +2,8 @@
 
 This guide provides step-by-step instructions for setting up the FastAPI backend development environment for Video Alert.
 
+> 💡 **Quick Verification**: After setup, run `./scripts/check_backend_env.sh` to verify your environment is correctly configured. See [DEV_ENV_CHECKLIST.md](DEV_ENV_CHECKLIST.md) for the complete checklist.
+
 ## Prerequisites
 
 ### Required Software
@@ -855,6 +857,12 @@ Complete list of environment variables used by the backend:
 ./scripts/dev_backend.sh
 ```
 
+**Verify environment setup**:
+```bash
+# Check if environment is properly configured
+./scripts/check_backend_env.sh
+```
+
 **Manual setup checklist**:
 - [ ] Install Python 3.8+
 - [ ] Create virtual environment
@@ -865,6 +873,17 @@ Complete list of environment variables used by the backend:
 - [ ] Initialize database: `python scripts/init_db.py`
 - [ ] Start server: `uvicorn app.main:app --reload`
 - [ ] Access API docs at http://localhost:8000/docs
+
+**Verification**:
+
+Run the environment verification script:
+```bash
+./scripts/check_backend_env.sh
+```
+
+This will check all the requirements and dependencies, and provide a detailed report of any issues.
+
+For the complete verification checklist, see [DEV_ENV_CHECKLIST.md](DEV_ENV_CHECKLIST.md).
 
 **Security reminders**:
 - Never commit `.env` files
