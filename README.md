@@ -74,6 +74,29 @@ npm run dev
 - Frontend runs on port 3000
 - API documentation available at http://localhost:8000/docs
 
+### Environment Verification
+
+Before starting development, verify your environment is correctly set up:
+
+```bash
+# Check both frontend and backend
+./scripts/check_dev_env.sh
+
+# Or check individually
+./scripts/check_backend_env.sh   # Backend only
+./scripts/check_frontend_env.sh  # Frontend only
+```
+
+These scripts will automatically verify:
+- Required software installations (Python, Node.js, etc.)
+- Package dependencies
+- Environment variables
+- Configuration files
+- Port availability
+- Database setup
+
+See [docs/DEV_ENV_CHECKLIST.md](docs/DEV_ENV_CHECKLIST.md) for the complete checklist.
+
 ### Development Guides
 
 For detailed setup instructions:
