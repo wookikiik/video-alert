@@ -60,81 +60,91 @@ def create_tables(conn):
     """Create database tables if they don't exist."""
     cursor = conn.cursor()
     
-    # Table: videos
-    # Stores information about monitored videos
+    # Table: crawl_schedules
+    # Stores crawl schedule configuration
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS videos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            video_id TEXT UNIQUE NOT NULL,
+        CREATE TABLE IF NOT EXISTS crawl_schedules (
+            id TEXT PRIMARY KEY,
+            url TEXT NOT NULL,
+            interval INTEGER NOT NULL,
+            is_active BOOLEAN NOT NULL DEFAULT 0,
+            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    
+    # Table: video_records
+    # Stores detected video metadata
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS video_records (
+            id TEXT PRIMARY KEY,
             title TEXT NOT NULL,
             url TEXT NOT NULL,
-            thumbnail_url TEXT,
+            thumbnail TEXT,
             description TEXT,
-            published_at TIMESTAMP,
             detected_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            notified BOOLEAN NOT NULL DEFAULT 0,
-            notified_at TIMESTAMP,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            schedule_id TEXT NOT NULL,
+            FOREIGN KEY (schedule_id) REFERENCES crawl_schedules (id)
         )
     """)
     
-    # Table: alert_logs
-    # Stores history of alerts sent
+    # Table: notification_logs
+    # Tracks notification attempts for each video
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS alert_logs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            video_id INTEGER NOT NULL,
-            channel_id TEXT NOT NULL,
-            message_id TEXT,
+        CREATE TABLE IF NOT EXISTS notification_logs (
+            id TEXT PRIMARY KEY,
+            video_id TEXT NOT NULL,
+            schedule_id TEXT NOT NULL,
             status TEXT NOT NULL,
-            error_message TEXT,
+            error_details TEXT,
             sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (video_id) REFERENCES videos (id)
+            FOREIGN KEY (video_id) REFERENCES video_records (id),
+            FOREIGN KEY (schedule_id) REFERENCES crawl_schedules (id)
         )
     """)
     
-    # Table: scheduler_runs
-    # Tracks scheduler execution history
+    # Table: crawl_execution_logs
+    # Records each crawl attempt and its outcome
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS scheduler_runs (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            job_name TEXT NOT NULL,
-            status TEXT NOT NULL,
+        CREATE TABLE IF NOT EXISTS crawl_execution_logs (
+            id TEXT PRIMARY KEY,
+            schedule_id TEXT NOT NULL,
             started_at TIMESTAMP NOT NULL,
-            completed_at TIMESTAMP,
-            duration_seconds REAL,
-            videos_found INTEGER DEFAULT 0,
-            alerts_sent INTEGER DEFAULT 0,
-            error_message TEXT,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+            finished_at TIMESTAMP,
+            status TEXT NOT NULL,
+            error_details TEXT,
+            FOREIGN KEY (schedule_id) REFERENCES crawl_schedules (id)
         )
     """)
     
     # Create indexes for better query performance
     cursor.execute("""
-        CREATE INDEX IF NOT EXISTS idx_videos_video_id 
-        ON videos(video_id)
+        CREATE INDEX IF NOT EXISTS idx_crawl_schedules_is_active 
+        ON crawl_schedules(is_active)
     """)
     
     cursor.execute("""
-        CREATE INDEX IF NOT EXISTS idx_videos_notified 
-        ON videos(notified)
+        CREATE INDEX IF NOT EXISTS idx_video_records_schedule_id 
+        ON video_records(schedule_id)
     """)
     
     cursor.execute("""
-        CREATE INDEX IF NOT EXISTS idx_videos_detected_at 
-        ON videos(detected_at DESC)
+        CREATE INDEX IF NOT EXISTS idx_video_records_detected_at 
+        ON video_records(detected_at DESC)
     """)
     
     cursor.execute("""
-        CREATE INDEX IF NOT EXISTS idx_alert_logs_video_id 
-        ON alert_logs(video_id)
+        CREATE INDEX IF NOT EXISTS idx_notification_logs_video_id 
+        ON notification_logs(video_id)
     """)
     
     cursor.execute("""
-        CREATE INDEX IF NOT EXISTS idx_scheduler_runs_job_name 
-        ON scheduler_runs(job_name, started_at DESC)
+        CREATE INDEX IF NOT EXISTS idx_notification_logs_schedule_id 
+        ON notification_logs(schedule_id)
+    """)
+    
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_crawl_execution_logs_schedule_id 
+        ON crawl_execution_logs(schedule_id, started_at DESC)
     """)
     
     conn.commit()
@@ -145,7 +155,7 @@ def verify_tables(conn):
     """Verify that all expected tables exist."""
     cursor = conn.cursor()
     
-    expected_tables = ["videos", "alert_logs", "scheduler_runs"]
+    expected_tables = ["crawl_schedules", "video_records", "notification_logs", "crawl_execution_logs"]
     
     cursor.execute("""
         SELECT name FROM sqlite_master 
