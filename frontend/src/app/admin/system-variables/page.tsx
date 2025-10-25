@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Copy, Eye, EyeOff, RefreshCw, AlertCircle } from "lucide-react";
 
 interface SystemVariable {
   label: string;
@@ -104,9 +105,7 @@ export default function SystemVariablesPage() {
                 disabled={loading}
                 className="flex items-center justify-center gap-2 min-w-[84px] max-w-[480px] cursor-pointer rounded-lg h-10 px-4 bg-slate-200 dark:bg-slate-700 text-sm font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined text-base">
-                  refresh
-                </span>
+                <RefreshCw className="w-4 h-4" />
                 <span className="truncate">Refresh</span>
               </button>
             </div>
@@ -145,9 +144,7 @@ export default function SystemVariablesPage() {
             {error && !loading && (
               <div className="p-4">
                 <div className="flex flex-col items-center justify-center gap-4 rounded-lg border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-900/20 p-8 text-center">
-                  <span className="material-symbols-outlined text-3xl text-red-600 dark:text-red-400">
-                    error_outline
-                  </span>
+                  <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
                   <p className="text-red-800 dark:text-red-200 font-semibold">
                     Failed to load system variables.
                   </p>
@@ -183,9 +180,7 @@ export default function SystemVariablesPage() {
                             : "text-slate-400 dark:text-slate-500 cursor-not-allowed"
                         }`}
                       >
-                        <span className="material-symbols-outlined text-base">
-                          content_copy
-                        </span>
+                        <Copy className="w-4 h-4" />
                       </button>
                     </div>
 
@@ -206,11 +201,11 @@ export default function SystemVariablesPage() {
                           className="absolute inset-y-0 right-0 flex items-center pr-3 hover:text-slate-700 dark:hover:text-slate-300 transition-colors"
                           type="button"
                         >
-                          <span className="material-symbols-outlined text-slate-500 text-base">
-                            {visiblePasswords.has(index)
-                              ? "visibility"
-                              : "visibility_off"}
-                          </span>
+                          {visiblePasswords.has(index) ? (
+                            <Eye className="w-4 h-4 text-slate-500" />
+                          ) : (
+                            <EyeOff className="w-4 h-4 text-slate-500" />
+                          )}
                         </button>
                       </div>
                     ) : (
