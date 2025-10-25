@@ -2,7 +2,21 @@
 # Backend Development Helper Script
 # This script automates the setup and startup of the FastAPI backend development server
 
+# Usage:
+#   ./scripts/dev_backend.sh           # Interactive mode (prompts for user input)
+#   ./scripts/dev_backend.sh --bypass  # Bypass mode (no prompts, auto-proceed)
+
 set -e  # Exit on error
+
+# Parse command line arguments
+BYPASS_MODE=false
+for arg in "$@"; do
+    if [ "$arg" = "--bypass" ]; then
+        BYPASS_MODE=true
+        shift
+        break
+    fi
+done
 
 # Colors for output
 RED='\033[0;31m'
@@ -35,6 +49,11 @@ SCRIPTS_DIR="$REPO_ROOT/scripts"
 
 print_info "Video Alert Backend Development Setup"
 print_info "========================================"
+if [ "$BYPASS_MODE" = true ]; then
+    print_info "Mode: Bypass (no prompts)"
+else
+    print_info "Mode: Interactive"
+fi
 echo ""
 
 # Check if we're in the right directory
@@ -80,22 +99,22 @@ echo ""
 # Step 2: Setup virtual environment (for pip only, Poetry manages its own)
 if [ "$PACKAGE_MANAGER" = "pip" ]; then
     print_info "Step 2: Setting up Python virtual environment..."
-    
-    if [ ! -d "venv" ]; then
+
+    if [ ! -d ".venv" ]; then
         print_info "Creating virtual environment..."
-        $PYTHON_CMD -m venv venv
-        print_success "Virtual environment created: venv/"
+        $PYTHON_CMD -m venv .venv
+        print_success "Virtual environment created: .venv/"
     else
-        print_success "Virtual environment already exists: venv/"
+        print_success "Virtual environment already exists: .venv/"
     fi
-    
+
     # Activate virtual environment
-    if [ -f "venv/bin/activate" ]; then
+    if [ -f ".venv/bin/activate" ]; then
         print_info "Activating virtual environment..."
-        . venv/bin/activate
+        . .venv/bin/activate
         print_success "Virtual environment activated"
     else
-        print_error "Could not find venv/bin/activate"
+        print_error "Could not find .venv/bin/activate"
         exit 1
     fi
     echo ""
@@ -151,34 +170,47 @@ print_info "Step 5: Checking environment configuration..."
 
 if [ ! -f ".env" ]; then
     print_warning ".env not found in backend directory"
-    
+
     if [ -f ".env.example" ]; then
-        print_info "Would you like to create .env from .env.example? (y/n)"
-        printf "Choice: "
-        read -r create_env
-        
-        if [ "$create_env" = "y" ] || [ "$create_env" = "Y" ]; then
+        if [ "$BYPASS_MODE" = true ]; then
+            # Bypass mode: auto-create from .env.example
             cp ".env.example" ".env"
-            print_success "Created .env from .env.example"
-            print_warning "IMPORTANT: Please edit .env with your actual configuration:"
+            print_success "Created .env from .env.example (bypass mode)"
+            print_warning "IMPORTANT: Please edit .env with your actual configuration later:"
             print_info "  • TELEGRAM_BOT_TOKEN - Get from @BotFather on Telegram"
             print_info "  • TELEGRAM_CHANNEL_ID - Your Telegram channel/group ID"
             print_info "  • MONITORED_URL - The URL to monitor for videos"
             print_info "  • DATABASE_URL - SQLite database path (default: sqlite:///./dev.db)"
             echo ""
-            print_info "Press Enter to continue after editing, or Ctrl+C to exit..."
-            read -r dummy
         else
-            print_warning "Skipping .env creation"
-            print_info "You can create it manually: cp backend/.env.example backend/.env"
-            print_info "The server may fail to start without proper environment variables!"
-            echo ""
-            print_info "Continue anyway? (y/n)"
+            # Interactive mode: ask user
+            print_info "Would you like to create .env from .env.example? (y/n)"
             printf "Choice: "
-            read -r continue_without_env
-            if [ "$continue_without_env" != "y" ] && [ "$continue_without_env" != "Y" ]; then
-                print_info "Exiting. Please create .env file first."
-                exit 0
+            read -r create_env
+
+            if [ "$create_env" = "y" ] || [ "$create_env" = "Y" ]; then
+                cp ".env.example" ".env"
+                print_success "Created .env from .env.example"
+                print_warning "IMPORTANT: Please edit .env with your actual configuration:"
+                print_info "  • TELEGRAM_BOT_TOKEN - Get from @BotFather on Telegram"
+                print_info "  • TELEGRAM_CHANNEL_ID - Your Telegram channel/group ID"
+                print_info "  • MONITORED_URL - The URL to monitor for videos"
+                print_info "  • DATABASE_URL - SQLite database path (default: sqlite:///./dev.db)"
+                echo ""
+                print_info "Press Enter to continue after editing, or Ctrl+C to exit..."
+                read -r dummy
+            else
+                print_warning "Skipping .env creation"
+                print_info "You can create it manually: cp backend/.env.example backend/.env"
+                print_info "The server may fail to start without proper environment variables!"
+                echo ""
+                print_info "Continue anyway? (y/n)"
+                printf "Choice: "
+                read -r continue_without_env
+                if [ "$continue_without_env" != "y" ] && [ "$continue_without_env" != "Y" ]; then
+                    print_info "Exiting. Please create .env file first."
+                    exit 0
+                fi
             fi
         fi
     else
@@ -188,7 +220,11 @@ if [ ! -f ".env" ]; then
         print_info "  TELEGRAM_BOT_TOKEN=your_token_here"
         print_info "  TELEGRAM_CHANNEL_ID=@your_channel"
         print_info "  MONITORED_URL=https://example.com"
-        exit 1
+        if [ "$BYPASS_MODE" = false ]; then
+            exit 1
+        else
+            print_warning "Continuing in bypass mode despite missing .env.example..."
+        fi
     fi
 else
     print_success ".env already exists"
@@ -238,28 +274,35 @@ echo ""
 
 # Step 7: Run tests (if pytest is available)
 print_info "Step 7: Running tests (optional)..."
-print_info "Would you like to run tests before starting the server? (y/n)"
-printf "Choice: "
-read -r run_tests
 
-if [ "$run_tests" = "y" ] || [ "$run_tests" = "Y" ]; then
-    if [ "$PACKAGE_MANAGER" = "poetry" ]; then
-        if poetry run pytest --version >/dev/null 2>&1; then
-            print_info "Running: poetry run pytest"
-            poetry run pytest || print_warning "Some tests failed, but continuing..."
+if [ "$BYPASS_MODE" = true ]; then
+    # Bypass mode: skip tests (default N)
+    print_info "Skipping tests (bypass mode, default: N)"
+else
+    # Interactive mode: ask user
+    print_info "Would you like to run tests before starting the server? (y/n)"
+    printf "Choice: "
+    read -r run_tests
+
+    if [ "$run_tests" = "y" ] || [ "$run_tests" = "Y" ]; then
+        if [ "$PACKAGE_MANAGER" = "poetry" ]; then
+            if poetry run pytest --version >/dev/null 2>&1; then
+                print_info "Running: poetry run pytest"
+                poetry run pytest || print_warning "Some tests failed, but continuing..."
+            else
+                print_warning "pytest not found in Poetry environment"
+            fi
         else
-            print_warning "pytest not found in Poetry environment"
+            if python -m pytest --version >/dev/null 2>&1; then
+                print_info "Running: pytest"
+                pytest || print_warning "Some tests failed, but continuing..."
+            else
+                print_warning "pytest not installed, skipping tests"
+            fi
         fi
     else
-        if python -m pytest --version >/dev/null 2>&1; then
-            print_info "Running: pytest"
-            pytest || print_warning "Some tests failed, but continuing..."
-        else
-            print_warning "pytest not installed, skipping tests"
-        fi
+        print_info "Skipping tests"
     fi
-else
-    print_info "Skipping tests"
 fi
 echo ""
 

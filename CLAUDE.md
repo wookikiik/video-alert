@@ -11,36 +11,46 @@ Video Alert is a full-stack application for monitoring websites and sending Tele
 ### Quick Start
 
 **Backend**:
+
 ```bash
 ./scripts/dev_backend.sh
+./scripts/dev_backend.sh --bypass  # Bypass mode (no prompts, auto-proceed)
 ```
+
 This script handles virtual environment setup, dependency installation, Playwright browser installation, database initialization, and starts the development server.
 
 **Frontend**:
-```bash
+
+````bash
 ./scripts/dev_frontend.sh
-```
+./scripts/dev_frontend.sh --bypass  # Bypass mode (no prompts, auto-proceed)
+-```
+
 This script checks dependencies, creates environment file, and starts the Next.js development server.
 
 **Docker (recommended for production-like setup)**:
+
 ```bash
 docker-compose up
-```
+````
 
 ### Backend Development
 
 **Run server** (from `backend/` directory):
+
 ```bash
 # With virtual environment activated
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 **Initialize database** (from repository root):
+
 ```bash
 python scripts/init_db.py
 ```
 
 **Run tests**:
+
 ```bash
 cd backend
 pytest
@@ -49,6 +59,7 @@ pytest tests/test_api.py  # specific test file
 ```
 
 **Install Playwright browsers** (required for web scraping):
+
 ```bash
 cd backend
 python -m playwright install
@@ -58,22 +69,26 @@ python -m playwright install
 ### Frontend Development
 
 **Run dev server** (from `frontend/` directory):
+
 ```bash
 npm run dev
 ```
 
 **Build for production**:
+
 ```bash
 npm run build
 npm start  # run production build
 ```
 
 **Lint code**:
+
 ```bash
 npm run lint
 ```
 
 **Type check**:
+
 ```bash
 npx tsc --noEmit
 ```
@@ -81,6 +96,7 @@ npx tsc --noEmit
 ### Running Single Tests
 
 **Backend**:
+
 ```bash
 # Run specific test function
 pytest tests/test_api.py::test_health_check -v
@@ -99,6 +115,7 @@ pytest tests/test_api.py -v -s
 ### Backend Architecture
 
 **Request Flow**:
+
 1. FastAPI application (`backend/app/main.py`) receives HTTP requests
 2. CORS middleware configured in `main.py` for frontend access
 3. Requests routed through `app.api.api_router` with `/api/v1` prefix
@@ -107,6 +124,7 @@ pytest tests/test_api.py -v -s
 6. Environment variables read from `backend/.env` file
 
 **Key Components**:
+
 - **FastAPI app** (`backend/app/main.py`): Main application entry point with CORS configuration
 - **API router** (`backend/app/api/__init__.py`): Aggregates all endpoint routers
 - **Admin endpoints** (`backend/app/api/endpoints/admin.py`): System variables and scheduling management
@@ -116,6 +134,7 @@ pytest tests/test_api.py -v -s
 - **Web scraping**: Playwright for browser automation
 
 **Database**:
+
 - SQLite database (default: `backend/dev.db`)
 - Tables: `videos`, `alert_logs`, `scheduler_runs` (created by `scripts/init_db.py`)
 - SQLAlchemy used for ORM
@@ -123,6 +142,7 @@ pytest tests/test_api.py -v -s
 
 **Environment Configuration**:
 Backend requires `backend/.env` file with:
+
 - `DATABASE_URL`: SQLite connection string
 - `MONITORED_URL`: Website URL to monitor
 - `TELEGRAM_BOT_TOKEN`: Bot token from @BotFather
@@ -133,6 +153,7 @@ Backend requires `backend/.env` file with:
 ### Frontend Architecture
 
 **Next.js App Router Structure**:
+
 - Uses Next.js 16 with App Router (not Pages Router)
 - TypeScript for type safety
 - React 19 with React Server Components
@@ -140,17 +161,20 @@ Backend requires `backend/.env` file with:
 - Homepage: `frontend/src/app/page.tsx`
 
 **Styling**:
+
 - Tailwind CSS v4 configured via `@tailwindcss/postcss`
 - Global styles in `frontend/src/app/globals.css`
 - shadcn/ui components (class-variance-authority, clsx, tailwind-merge)
 - Lucide React for icons
 
 **API Integration**:
+
 - Backend API base URL configured via `NEXT_PUBLIC_API_BASE_URL` in `frontend/.env.local`
 - Default: `http://localhost:8000`
 - CORS configured in backend to allow `localhost:3000` and `localhost:3001`
 
 **Key Locations**:
+
 - App Router pages: `frontend/src/app/`
 - Reusable components: `frontend/src/components/`
 - Utility functions: `frontend/src/lib/`
@@ -164,6 +188,7 @@ CORS is configured in `backend/app/main.py` using FastAPI's CORSMiddleware. Allo
 
 **API Routing**:
 All API endpoints are prefixed with `/api/v1` (defined in `settings.API_V1_PREFIX`). The main router in `backend/app/api/__init__.py` includes sub-routers from endpoints directory. Currently includes:
+
 - Admin router: `/api/v1/admin/*` endpoints
 
 **Scheduler Architecture**:
@@ -181,6 +206,7 @@ Next.js loads environment variables on startup. After changing `frontend/.env.lo
 This project uses Tailwind CSS v4, not v3. Configuration is handled via `@tailwindcss/postcss` rather than traditional `tailwind.config.js`. Styles are imported in `globals.css`.
 
 **Next.js 16 Features**:
+
 - Uses App Router (not Pages Router)
 - React Server Components by default
 - Client components require `"use client"` directive
@@ -215,11 +241,13 @@ This project uses Tailwind CSS v4, not v3. Configuration is handled via `@tailwi
 ### Backend Testing
 
 Tests located in `backend/tests/` directory. Key files:
+
 - `conftest.py`: Pytest fixtures for test setup
 - `test_api.py`: API endpoint tests
 - Test database isolation: Tests should use separate test database
 
 Run tests with:
+
 ```bash
 cd backend
 pytest -v  # verbose output
@@ -229,18 +257,21 @@ pytest --cov=app  # with coverage
 ### Frontend Testing
 
 No test framework currently configured. When adding tests, common patterns:
+
 - Jest + React Testing Library for component tests
 - Playwright or Cypress for E2E tests
 
 ## Troubleshooting
 
 **Backend**: Detailed troubleshooting in `docs/DEV_SETUP_BACKEND.md` including:
+
 - Playwright browser installation issues
 - SQLite "database is locked" errors
 - Port conflicts
 - Missing environment variables
 
 **Frontend**: Detailed troubleshooting in `docs/DEV_SETUP_FRONTEND.md` including:
+
 - CORS and API connection issues
 - Environment variables not loading
 - Node version mismatches
@@ -249,6 +280,7 @@ No test framework currently configured. When adding tests, common patterns:
 ## Key File Locations
 
 **Backend**:
+
 - Main app: `backend/app/main.py`
 - Configuration: `backend/app/core/config.py`
 - API routes: `backend/app/api/endpoints/*.py`
@@ -258,6 +290,7 @@ No test framework currently configured. When adding tests, common patterns:
 - Requirements: `backend/requirements.txt`
 
 **Frontend**:
+
 - App entry: `frontend/src/app/layout.tsx`
 - Homepage: `frontend/src/app/page.tsx`
 - Components: `frontend/src/components/`
@@ -265,6 +298,7 @@ No test framework currently configured. When adding tests, common patterns:
 - Package config: `frontend/package.json`
 
 **Configuration**:
+
 - Docker: `docker-compose.yml` (root)
 - Backend env: `backend/.env` (not committed)
 - Frontend env: `frontend/.env.local` (not committed)

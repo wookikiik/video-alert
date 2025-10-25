@@ -2,7 +2,21 @@
 # Frontend Development Helper Script
 # This script automates the setup and startup of the Next.js frontend development server
 
+# Usage: ./dev_frontend.sh [--bypass]
+#   ./scripts/dev_frontend.sh           # Interactive mode (prompts for user input)
+#   ./scripts/dev_frontend.sh --bypass  # Bypass mode (no prompts, auto-proceed)
+
 set -e  # Exit on error
+
+# Parse command line arguments
+BYPASS_MODE=false
+for arg in "$@"; do
+    if [ "$arg" = "--bypass" ]; then
+        BYPASS_MODE=true
+        shift
+        break
+    fi
+done
 
 # Colors for output
 RED='\033[0;31m'
@@ -140,25 +154,29 @@ else
 fi
 
 # Check if backend is running
-print_info "Checking if backend is running..."
-if command -v curl >/dev/null 2>&1; then
-    if curl -s -f -o /dev/null "http://localhost:8000/health" 2>/dev/null; then
-        print_success "Backend is running at http://localhost:8000"
-    else
-        print_warning "Backend does not appear to be running at http://localhost:8000"
-        print_info "Make sure to start the backend first (see backend/README.md)"
-        print_info "Backend should be running before starting the frontend"
-        echo ""
-        print_info "Continue anyway? (y/n)"
-        printf "Choice: "
-        read -r continue_anyway
-        if [ "$continue_anyway" != "y" ] && [ "$continue_anyway" != "Y" ]; then
-            print_info "Exiting. Please start the backend first."
-            exit 0
-        fi
-    fi
+if [ "$BYPASS_MODE" = true ]; then
+    print_warning "Skipping backend check (--bypass flag provided)"
 else
-    print_warning "curl not found, skipping backend check"
+    print_info "Checking if backend is running..."
+    if command -v curl >/dev/null 2>&1; then
+        if curl -s -f -o /dev/null "http://localhost:8000/health" 2>/dev/null; then
+            print_success "Backend is running at http://localhost:8000"
+        else
+            print_warning "Backend does not appear to be running at http://localhost:8000"
+            print_info "Make sure to start the backend first (see backend/README.md)"
+            print_info "Backend should be running before starting the frontend"
+            echo ""
+            print_info "Continue anyway? (y/n)"
+            printf "Choice: "
+            read -r continue_anyway
+            if [ "$continue_anyway" != "y" ] && [ "$continue_anyway" != "Y" ]; then
+                print_info "Exiting. Please start the backend first."
+                exit 0
+            fi
+        fi
+    else
+        print_warning "curl not found, skipping backend check"
+    fi
 fi
 echo ""
 
