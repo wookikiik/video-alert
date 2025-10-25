@@ -23,8 +23,27 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 
+// Navigation types
+type NavItem = {
+  title: string
+  url: string
+  icon: React.ComponentType
+}
+
+type NavGroup = {
+  title: string
+  items: NavItem[]
+}
+
+type NavigationItem = NavItem | NavGroup
+
+// Type guard to check if item is a group
+function isNavGroup(item: NavigationItem): item is NavGroup {
+  return 'items' in item && Array.isArray(item.items)
+}
+
 // Navigation items
-const navItems = [
+const navItems: NavigationItem[] = [
   {
     title: "Home",
     url: "/",
@@ -70,7 +89,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
-                if (item.items) {
+                if (isNavGroup(item)) {
                   // Group with sub-items
                   return (
                     <React.Fragment key={item.title}>
@@ -104,7 +123,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       isActive={pathname === item.url}
                       tooltip={item.title}
                     >
-                      <Link href={item.url!}>
+                      <Link href={item.url}>
                         <item.icon />
                         <span>{item.title}</span>
                       </Link>
