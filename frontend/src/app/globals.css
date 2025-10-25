@@ -26,6 +26,19 @@
     /* Border colors */
     --color-border: #e2e8f0;
     --color-border-strong: #cbd5e1;
+
+    /* shadcn/ui additions */
+    --color-card: #ffffff;
+    --color-card-foreground: #0d141b;
+    --color-popover: #ffffff;
+    --color-popover-foreground: #0d141b;
+    --color-accent: #f1f5f9;
+    --color-accent-foreground: #0f172a;
+    --color-destructive: #ef4444;
+    --color-destructive-foreground: #ffffff;
+    --color-input: #e2e8f0;
+    --color-ring: #3b82f6;
+    --ring-offset-background: #ffffff;
     
     /* State colors */
     --color-success: #10b981;
