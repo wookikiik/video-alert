@@ -31,7 +31,17 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Verify compliance with core principles from `.specify/memory/constitution.md`:
+
+- [ ] **I. Full-Stack Separation**: Does this feature maintain backend/frontend independence? Communication only through `/api/v1/*` endpoints?
+- [ ] **II. API-First Design**: Are all backend endpoints documented in OpenAPI/Swagger? Request/response schemas defined?
+- [ ] **III. Test Coverage**: Are contract tests planned for API endpoints? Integration tests for critical paths?
+- [ ] **IV. Environment Safety**: No secrets in code? Configuration via `.env` files?
+- [ ] **V. Docker-First Deployment**: Feature deployable via `docker-compose.yml`?
+- [ ] **VI. Database Simplicity**: Schema changes via `scripts/init_db.py`? Using SQLite + SQLAlchemy appropriately?
+- [ ] **VII. Scheduler Architecture**: If feature involves scheduling, using APScheduler with proper environment controls?
+
+**Violations requiring justification**: If any principle is violated, document in "Complexity Tracking" section below with rationale.
 
 ## Project Structure
 
