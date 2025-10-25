@@ -146,7 +146,7 @@
 }
 
 @layer base {
-  * {
+  body {
     border-color: var(--color-border);
   }
 

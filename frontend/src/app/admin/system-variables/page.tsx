@@ -91,7 +91,7 @@ export default function SystemVariablesPage() {
   }, []);
 
   return (
-    <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-[var(--color-surface-secondary)] dark:bg-[var(--color-background)] text-[var(--color-foreground)]">
+    <div className="relative flex h-auto min-h-screen w-full flex-col overflow-x-hidden bg-[var(--color-surface-secondary)] text-[var(--color-foreground)]">
       <div className="layout-container flex h-full grow flex-col">
         <div className="px-4 md:px-10 lg:px-20 xl:px-40 flex flex-1 justify-center py-5">
           <div className="layout-content-container flex flex-col w-full max-w-3xl flex-1">
@@ -112,10 +112,10 @@ export default function SystemVariablesPage() {
 
             {/* Information Banner */}
             <div className="p-4">
-              <div className="flex flex-1 flex-col items-start justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] dark:border-[var(--color-border-strong)] bg-[var(--color-info-light)] dark:bg-[var(--color-info-light)] p-5">
+              <div className="flex flex-1 flex-col items-start justify-between gap-4 rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-info-light)] p-5">
                 <div className="flex flex-col gap-1">
                   <p className="text-base font-[var(--font-weight-bold)]">Information</p>
-                  <p className="text-[var(--color-info-light-foreground)] dark:text-[var(--color-info-light-foreground)] text-sm">
+                  <p className="text-[var(--color-info-light-foreground)] text-sm">
                     These values are sourced from the server&apos;s environment
                     file. To modify them, you must edit the server&apos;s .env
                     file and restart the application.
@@ -130,11 +130,11 @@ export default function SystemVariablesPage() {
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-[var(--color-border)] dark:border-[var(--color-border-strong)] bg-[var(--color-surface)] dark:bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] animate-pulse"
+                    className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)] animate-pulse"
                   >
-                    <div className="h-4 bg-[var(--color-muted)] dark:bg-[var(--color-muted)] rounded w-1/3"></div>
-                    <div className="h-12 bg-[var(--color-muted)] dark:bg-[var(--color-muted)] rounded"></div>
-                    <div className="h-5 bg-[var(--color-muted)] dark:bg-[var(--color-muted)] rounded w-1/4"></div>
+                    <div className="h-4 bg-[var(--color-muted)] rounded w-1/3"></div>
+                    <div className="h-12 bg-[var(--color-muted)] rounded"></div>
+                    <div className="h-5 bg-[var(--color-muted)] rounded w-1/4"></div>
                   </div>
                 ))}
               </div>
@@ -143,9 +143,9 @@ export default function SystemVariablesPage() {
             {/* Error State */}
             {error && !loading && (
               <div className="p-4">
-                <div className="flex flex-col items-center justify-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-danger-light)] dark:border-[var(--color-danger-light)] bg-[var(--color-danger-light)] dark:bg-[var(--color-danger-light)] p-8 text-center">
+                <div className="flex flex-col items-center justify-center gap-4 rounded-[var(--radius-lg)] border border-[var(--color-danger)] bg-[var(--color-danger-light)] p-8 text-center">
                   <AlertCircle className="w-8 h-8 text-[var(--color-danger)]" />
-                  <p className="text-[var(--color-danger-light-foreground)] dark:text-[var(--color-danger-light-foreground)] font-[var(--font-weight-semibold)]">
+                  <p className="text-[var(--color-danger-light-foreground)] font-[var(--font-weight-semibold)]">
                     Failed to load system variables.
                   </p>
                   <button
@@ -164,7 +164,7 @@ export default function SystemVariablesPage() {
                 {variables.map((variable, index) => (
                   <div
                     key={index}
-                    className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-[var(--color-border)] dark:border-[var(--color-border-strong)] bg-[var(--color-surface)] dark:bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
+                    className="flex flex-col gap-4 rounded-[var(--radius-xl)] border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-[var(--shadow-sm)]"
                   >
                     {/* Label and Copy Button */}
                     <div className="flex items-center justify-between">
@@ -176,8 +176,8 @@ export default function SystemVariablesPage() {
                         disabled={!variable.configured}
                         className={`flex items-center justify-center rounded-[var(--radius-md)] h-8 w-8 transition-[var(--transition-base)] ${
                           variable.configured
-                            ? "hover:bg-[var(--color-muted)] dark:hover:bg-[var(--color-muted)] cursor-pointer"
-                            : "text-[var(--color-muted-foreground)] opacity-50 cursor-not-allowed"
+                            ? "hover:bg-[var(--color-muted)] cursor-pointer"
+                            : "text-[var(--color-muted-foreground)] opacity-40 cursor-not-allowed"
                         }`}
                       >
                         <Copy className="w-4 h-4" />
@@ -189,7 +189,7 @@ export default function SystemVariablesPage() {
                       <div className="relative">
                         <input
                           aria-readonly="true"
-                          className="w-full bg-[var(--color-muted)] dark:bg-[var(--color-muted)] border border-[var(--color-border)] dark:border-[var(--color-border-strong)] rounded-[var(--radius-lg)] p-3 text-base text-[var(--color-foreground)]"
+                          className="w-full bg-[var(--color-muted)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-3 text-base text-[var(--color-foreground)]"
                           readOnly
                           type={
                             visiblePasswords.has(index) ? "text" : "password"
@@ -211,7 +211,7 @@ export default function SystemVariablesPage() {
                     ) : (
                       <input
                         aria-readonly="true"
-                        className={`w-full bg-[var(--color-muted)] dark:bg-[var(--color-muted)] border border-[var(--color-border)] dark:border-[var(--color-border-strong)] rounded-[var(--radius-lg)] p-3 text-base ${
+                        className={`w-full bg-[var(--color-muted)] border border-[var(--color-border)] rounded-[var(--radius-lg)] p-3 text-base ${
                           variable.configured
                             ? "text-[var(--color-foreground)]"
                             : "text-[var(--color-muted-foreground)] placeholder:text-[var(--color-muted-foreground)]"
@@ -230,8 +230,8 @@ export default function SystemVariablesPage() {
                       <span
                         className={`inline-flex items-center rounded-[var(--radius-full)] px-2.5 py-0.5 text-xs font-[var(--font-weight-medium)] ${
                           variable.configured
-                            ? "bg-[var(--color-success-light)] dark:bg-[var(--color-success-light)] text-[var(--color-success-light-foreground)] dark:text-[var(--color-success-light-foreground)]"
-                            : "bg-[var(--color-warning-light)] dark:bg-[var(--color-warning-light)] text-[var(--color-warning-light-foreground)] dark:text-[var(--color-warning-light-foreground)]"
+                            ? "bg-[var(--color-success-light)] text-[var(--color-success-light-foreground)]"
+                            : "bg-[var(--color-warning-light)] text-[var(--color-warning-light-foreground)]"
                         }`}
                       >
                         {variable.configured ? "Configured" : "Not Set"}
