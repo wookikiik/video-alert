@@ -1,6 +1,7 @@
 """
 Dependencies for API endpoints.
 """
+import os
 from typing import Annotated
 from fastapi import Header, HTTPException, status
 
@@ -11,9 +12,7 @@ async def get_current_admin(
     """
     Simple admin authentication dependency.
     
-    For now, this is a placeholder that checks for a basic admin token.
-    In production, this should be replaced with proper authentication
-    (e.g., JWT tokens, OAuth, etc.).
+    Validates admin token against environment variable.
     
     Args:
         x_admin_token: Admin token from request header
@@ -24,8 +23,6 @@ async def get_current_admin(
     Raises:
         HTTPException: If authentication fails
     """
-    # For development/demo: accept any non-empty token
-    # In production, validate against secure token storage
     if not x_admin_token or x_admin_token.strip() == "":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -33,6 +30,12 @@ async def get_current_admin(
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Placeholder: In production, verify token against database/config
-    # For now, any non-empty token is accepted for development purposes
+    expected_token = os.getenv("X_ADMIN_TOKEN", "")
+    if x_admin_token != expected_token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid admin token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     return True
