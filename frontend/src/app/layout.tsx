@@ -20,7 +20,9 @@ export default function RootLayout({
         <SidebarProvider>
           <AppSidebar />
           <main className="w-full">
-            <SidebarTrigger />
+            <header className="sticky top-0 z-10 flex h-14 items-center gap-4 border-b bg-background px-4">
+              <SidebarTrigger />
+            </header>
             {children}
           </main>
         </SidebarProvider>
