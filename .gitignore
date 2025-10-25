@@ -86,3 +86,7 @@ lerna-debug.log*
 out/
 *.tsbuildinfo
 next-env.d.ts
+
+# AI Agents
+.agents/
+recover_agents.cjs
