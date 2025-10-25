@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -97,28 +98,35 @@ export default function SystemVariablesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
-        <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
-          <div>
-            <h1 className="text-4xl font-bold tracking-tight">
-              System Variables
-            </h1>
-            <p className="text-gray-600 mt-2">
-              Manage your system configuration and environment variables
-            </p>
+    <div className="flex flex-col min-h-screen">
+      {/* Header with Sidebar Trigger */}
+      <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-background px-4">
+        <SidebarTrigger />
+        <h1 className="text-lg font-semibold">System Variables</h1>
+      </header>
+
+      <div className="flex-1 bg-gray-50 dark:bg-gray-900">
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+          {/* Page Header */}
+          <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">
+                System Configuration
+              </h2>
+              <p className="text-gray-600 mt-2">
+                Manage your system configuration and environment variables
+              </p>
+            </div>
+            <Button
+              onClick={handleRefresh}
+              disabled={loading}
+              variant="outline"
+              size="default"
+            >
+              <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
+              Refresh
+            </Button>
           </div>
-          <Button
-            onClick={handleRefresh}
-            disabled={loading}
-            variant="outline"
-            size="default"
-          >
-            <RefreshCw className={cn("w-4 h-4", loading && "animate-spin")} />
-            Refresh
-          </Button>
-        </div>
 
         {/* Information Alert */}
         <Alert variant="info" className="mb-6">
@@ -250,6 +258,7 @@ export default function SystemVariablesPage() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   );
