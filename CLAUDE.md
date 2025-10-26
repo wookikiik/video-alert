@@ -93,23 +93,6 @@ npm run lint
 npx tsc --noEmit
 ```
 
-### Running Single Tests
-
-**Backend**:
-
-```bash
-# Run specific test function
-pytest tests/test_api.py::test_health_check -v
-
-# Run specific test class
-pytest tests/test_api.py::TestAdminEndpoints -v
-
-# Run with output
-pytest tests/test_api.py -v -s
-```
-
-**Frontend**: No test framework currently configured in package.json.
-
 ## Architecture
 
 ### Backend Architecture
@@ -130,13 +113,14 @@ pytest tests/test_api.py -v -s
 - **Admin endpoints** (`backend/app/api/endpoints/admin.py`): System variables and scheduling management
 - **Configuration** (`backend/app/core/config.py`): Pydantic Settings for environment variables
 - **Database**: SQLite with SQLAlchemy ORM (models to be defined in `backend/app/models/`)
-- **Scheduler**: APScheduler for periodic video monitoring (when `SCHEDULER_ENABLED=true`)
+- **Scheduler**: APScheduler for periodic video monitoring (planned, when `SCHEDULER_ENABLED=true`)
 - **Web scraping**: Playwright for browser automation
+- **CORS middleware**: Custom implementation with Replit wildcard domain support
 
 **Database**:
 
 - SQLite database (default: `backend/dev.db`)
-- Tables: `videos`, `alert_logs`, `scheduler_runs` (created by `scripts/init_db.py`)
+- Tables: `crawl_schedules`, `video_records`, `notification_logs`, `crawl_execution_logs` (created by `scripts/init_db.py`)
 - SQLAlchemy used for ORM
 - Async support via aiosqlite
 
@@ -164,11 +148,12 @@ Backend requires `backend/.env` file with:
 
 - Tailwind CSS v4 configured via `@tailwindcss/postcss`
 - Global styles in `frontend/src/app/globals.css`
-- shadcn/ui components (class-variance-authority, clsx, tailwind-merge)
+- **shadcn/ui** components (class-variance-authority, clsx, tailwind-merge)
 - Lucide React for icons
 
 **API Integration**:
 
+- Frontend dev server runs on port 3000 (configured in `package.json`)
 - Backend API base URL configured via `NEXT_PUBLIC_API_BASE_URL` in `frontend/.env.local`
 - Default: `http://localhost:8000`
 - CORS configured in backend to allow `localhost:3000` and `localhost:3001`
@@ -198,6 +183,9 @@ When `SCHEDULER_ENABLED=true`, the scheduler runs as a background thread within 
 Playwright requires separate browser binary installation (`python -m playwright install`). Runs in headless mode by default. Set `PLAYWRIGHT_HEADLESS=false` for debugging with visible browser window.
 
 ### Frontend
+
+**shadcn/ui Components**:
+This project uses shadcn/ui for UI components. Components are built with Radix UI primitives and styled with Tailwind CSS. Install new components using `npx shadcn@latest add [component-name]`. Components are stored in `frontend/src/components/ui/`.
 
 **Environment Variables**:
 Next.js loads environment variables on startup. After changing `frontend/.env.local`, restart the dev server. Variables prefixed with `NEXT_PUBLIC_` are exposed to the browser and embedded in client bundle.
@@ -256,10 +244,23 @@ pytest --cov=app  # with coverage
 
 ### Frontend Testing
 
-No test framework currently configured. When adding tests, common patterns:
+Test framework configured with Jest and React Testing Library. Test files should be placed in `frontend/src/__tests__/` or co-located with components using `.test.tsx` or `.spec.tsx` extensions.
 
-- Jest + React Testing Library for component tests
-- Playwright or Cypress for E2E tests
+Run tests with:
+
+```bash
+cd frontend
+npm test              # run tests once
+npm run test:watch    # run tests in watch mode
+npm run test:coverage # run tests with coverage report
+```
+
+**Testing stack**:
+
+- Jest 30 for test runner
+- React Testing Library 16 for component testing
+- jest-environment-jsdom for DOM simulation
+- @testing-library/user-event for user interaction simulation
 
 ## Troubleshooting
 
@@ -286,7 +287,7 @@ No test framework currently configured. When adding tests, common patterns:
 - API routes: `backend/app/api/endpoints/*.py`
 - Database models: `backend/app/models/`
 - Schemas: `backend/app/schemas/`
-- Tests: `backend/tests/`
+  ++
 - Requirements: `backend/requirements.txt`
 
 **Frontend**:
