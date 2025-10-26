@@ -1,21 +1,16 @@
 <!--
 Sync Impact Report:
-- Version change: none → 1.0.0
-- Initial constitution creation
+- Version change: 1.0.0 → 1.1.0
 - Added principles:
-  I. Full-Stack Separation (non-negotiable)
-  II. API-First Design (non-negotiable)
-  III. Test Coverage (strongly recommended)
-  IV. Environment Safety (non-negotiable)
-  V. Docker-First Deployment (strongly recommended)
-  VI. Database Simplicity (current standard)
-  VII. Scheduler Architecture (current standard)
-- Added sections: Development Standards, Governance
+  VIII. Documentation Language Standard (spec directory Korean requirement)
+- Modified sections:
+  - Governance: Updated version number, last amended date
 - Templates requiring updates:
-  ✅ plan-template.md: Updated Constitution Check section with specific principle checklist
-  ✅ spec-template.md: Added constitution compliance note and examples in Functional Requirements
-  ✅ tasks-template.md: Added constitution compliance references in Setup and Foundational phases
-  ✅ Commands verified: speckit.plan.md, speckit.analyze.md already reference constitution
+  ✅ spec-template.md: Added Korean language requirement notice at top
+  ✅ plan-template.md: Added Korean language notice for spec documentation
+  ✅ tasks-template.md: Added Korean language notice for spec documentation
+  ✅ checklist-template.md: Added Korean language notice for spec documentation
+  ✅ agent-file-template.md: Verified (no spec-specific references, no changes needed)
 - Follow-up TODOs: None - all placeholders filled, all templates updated
 -->
 
@@ -104,6 +99,20 @@ Sync Impact Report:
 
 **Rationale**: Embedded scheduler simplifies development; separate process for production enables independent scaling and fault isolation.
 
+### VIII. Documentation Language Standard
+**Non-negotiable**: All specification documents in `./specs/**/*.md` MUST be written in Korean.
+
+- Feature specifications (`spec.md`) MUST be in Korean
+- Implementation plans (`plan.md`) MUST be in Korean
+- Task lists (`tasks.md`) MUST be in Korean
+- Research documents (`research.md`) MUST be in Korean
+- Design documents (data models, quickstart guides, contracts) MUST be in Korean
+- Checklists and other spec-related documentation MUST be in Korean
+- Templates may contain English instructions but generated content MUST be Korean
+- Code comments, README.md, and technical documentation (CLAUDE.md, DEV_SETUP guides) remain in English
+
+**Rationale**: Ensures consistent communication for Korean-speaking stakeholders and team members while maintaining technical documentation in English for broader developer access. Spec documents are user-facing planning artifacts, whereas code and setup documentation serve the international developer community.
+
 ## Development Standards
 
 ### Code Organization
@@ -124,10 +133,11 @@ Sync Impact Report:
 - Type checking (TypeScript) and linting before commits
 
 ### Documentation
-- CLAUDE.md provides AI assistant guidance for codebase
-- DEV_SETUP_*.md guides for backend/frontend setup with troubleshooting
-- API documentation auto-generated via FastAPI OpenAPI
-- README.md for project overview and quick start
+- CLAUDE.md provides AI assistant guidance for codebase (English)
+- DEV_SETUP_*.md guides for backend/frontend setup with troubleshooting (English)
+- API documentation auto-generated via FastAPI OpenAPI (English)
+- README.md for project overview and quick start (English)
+- Specification documents in `./specs/` directory (Korean, per Principle VIII)
 
 ## Governance
 
@@ -139,16 +149,16 @@ Sync Impact Report:
 5. Commit with message format: `docs: amend constitution to vX.Y.Z (summary of change)`
 
 ### Versioning Policy
-**Current version**: 1.0.0 (MAJOR.MINOR.PATCH)
+**Current version**: 1.1.0 (MAJOR.MINOR.PATCH)
 
 - **MAJOR**: Backward incompatible changes (e.g., removing a principle, changing non-negotiable standards)
 - **MINOR**: New principle added or materially expanded guidance (e.g., adding new mandatory sections)
 - **PATCH**: Clarifications, wording improvements, typo fixes, non-semantic refinements
 
 ### Compliance Review
-- All PRs MUST verify compliance with non-negotiable principles (I, II, IV)
+- All PRs MUST verify compliance with non-negotiable principles (I, II, IV, VIII)
 - Complexity that violates principles MUST be justified in plan.md "Complexity Tracking" section
 - Constitution supersedes all other development practices
 - Use CLAUDE.md for runtime development guidance; constitution defines project governance
 
-**Version**: 1.0.0 | **Ratified**: 2025-10-25 | **Last Amended**: 2025-10-25
+**Version**: 1.1.0 | **Ratified**: 2025-10-25 | **Last Amended**: 2025-10-26

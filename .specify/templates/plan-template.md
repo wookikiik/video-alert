@@ -1,5 +1,7 @@
 # Implementation Plan: [FEATURE]
 
+> **⚠️ 언어 요구사항 (Language Requirement)**: 이 문서는 반드시 한글로 작성되어야 합니다. (This document MUST be written in Korean per Constitution Principle VIII)
+
 **Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
 **Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
@@ -40,6 +42,7 @@ Verify compliance with core principles from `.specify/memory/constitution.md`:
 - [ ] **V. Docker-First Deployment**: Feature deployable via `docker-compose.yml`?
 - [ ] **VI. Database Simplicity**: Schema changes via `scripts/init_db.py`? Using SQLite + SQLAlchemy appropriately?
 - [ ] **VII. Scheduler Architecture**: If feature involves scheduling, using APScheduler with proper environment controls?
+- [ ] **VIII. Documentation Language Standard**: Is this document written in Korean? All spec documents in `./specs/` in Korean?
 
 **Violations requiring justification**: If any principle is violated, document in "Complexity Tracking" section below with rationale.
 

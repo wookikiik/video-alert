@@ -5,6 +5,8 @@ description: "Task list template for feature implementation"
 
 # Tasks: [FEATURE NAME]
 
+> **⚠️ 언어 요구사항 (Language Requirement)**: 이 문서는 반드시 한글로 작성되어야 합니다. (This document MUST be written in Korean per Constitution Principle VIII)
+
 **Input**: Design documents from `/specs/[###-feature-name]/`
 **Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
 
@@ -54,6 +56,7 @@ description: "Task list template for feature implementation"
 - [ ] T002 Initialize [language] project with [framework] dependencies
 - [ ] T003 [P] Configure linting and formatting tools
 - [ ] T004 [P] Setup environment variable files (`.env.example`) (Principle IV: Environment Safety)
+- [ ] T005 [P] Verify all spec documents are written in Korean (Principle VIII: Documentation Language Standard)
 
 ---
 

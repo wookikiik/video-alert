@@ -1,8 +1,10 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
+> **⚠️ 언어 요구사항 (Language Requirement)**: 이 문서는 반드시 한글로 작성되어야 합니다. (This document MUST be written in Korean per Constitution Principle VIII)
+
+**Feature Branch**: `[###-feature-name]`
+**Created**: [DATE]
+**Status**: Draft
 **Input**: User description: "$ARGUMENTS"
 
 ## User Scenarios & Testing *(mandatory)*

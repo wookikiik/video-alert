@@ -1,5 +1,7 @@
 # [CHECKLIST TYPE] Checklist: [FEATURE NAME]
 
+> **⚠️ 언어 요구사항 (Language Requirement)**: 이 문서는 반드시 한글로 작성되어야 합니다. (This document MUST be written in Korean per Constitution Principle VIII)
+
 **Purpose**: [Brief description of what this checklist covers]
 **Created**: [DATE]
 **Feature**: [Link to spec.md or relevant documentation]
