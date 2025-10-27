@@ -14,23 +14,7 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-
-// This is sample data.
-const data = {
-  navMain: [
-    {
-      title: "Admin",
-      url: "/admin/system-variables",
-      items: [
-        {
-          title: "System Variables",
-          url: "/admin/system-variables",
-          isActive: true,
-        },
-      ],
-    },
-  ],
-};
+import { hierarchicalNavigationData } from "@/lib/navigation";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -54,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => (
+            {hierarchicalNavigationData.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
                   <a href={item.url} className="font-medium">
