@@ -6,7 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -97,7 +103,7 @@ export default function SystemVariablesPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="flex flex-wrap justify-between items-center gap-4 mb-8">
@@ -125,9 +131,9 @@ export default function SystemVariablesPage() {
           <Info className="h-4 w-4" />
           <AlertTitle>Information</AlertTitle>
           <AlertDescription>
-            These values are sourced from the server&apos;s environment file.
-            To modify them, you must edit the server&apos;s .env file and
-            restart the application.
+            These values are sourced from the server&apos;s environment file. To
+            modify them, you must edit the server&apos;s .env file and restart
+            the application.
           </AlertDescription>
         </Alert>
 
@@ -195,7 +201,8 @@ export default function SystemVariablesPage() {
                     <Input
                       readOnly
                       type={
-                        variable.type === "password" && !visiblePasswords.has(index)
+                        variable.type === "password" &&
+                        !visiblePasswords.has(index)
                           ? "password"
                           : "text"
                       }
