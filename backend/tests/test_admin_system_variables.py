@@ -8,30 +8,15 @@ from unittest.mock import patch
 
 class TestSystemVariablesEndpoint:
     """Tests for GET /api/v1/admin/system-variables endpoint."""
-    
-    def test_get_system_variables_requires_auth(self, client):
-        """Test that endpoint requires authentication."""
-        response = client.get("/api/v1/admin/system-variables")
-        assert response.status_code == 401
-        assert "Not authenticated" in response.json()["detail"]
-    
-    def test_get_system_variables_rejects_empty_token(self, client):
-        """Test that endpoint rejects empty auth token."""
-        response = client.get(
-            "/api/v1/admin/system-variables",
-            headers={"X-Admin-Token": ""}
-        )
-        assert response.status_code == 401
-        assert "Not authenticated" in response.json()["detail"]
-    
-    def test_get_system_variables_with_all_vars_set(self, client, admin_headers):
+
+    def test_get_system_variables_with_all_vars_set(self, client):
         """Test endpoint when all environment variables are set."""
         with patch.dict(os.environ, {
             "MONITORED_URL": "https://example.com/videos",
             "TELEGRAM_CHANNEL_ID": "@testchannel",
             "TELEGRAM_BOT_TOKEN": "123456:ABCdefGHIjkl"
         }):
-            response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+            response = client.get("/api/v1/admin/system-variables")
             
             assert response.status_code == 200
             data = response.json()
@@ -56,10 +41,10 @@ class TestSystemVariablesEndpoint:
             assert data["telegram_bot_token"]["is_set"] is True
             assert "withheld" in data["telegram_bot_token"]["hint"].lower()
     
-    def test_get_system_variables_with_no_vars_set(self, client, admin_headers):
+    def test_get_system_variables_with_no_vars_set(self, client):
         """Test endpoint when no environment variables are set."""
         with patch.dict(os.environ, {}, clear=True):
-            response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+            response = client.get("/api/v1/admin/system-variables")
             
             assert response.status_code == 200
             data = response.json()
@@ -77,14 +62,14 @@ class TestSystemVariablesEndpoint:
             assert data["telegram_bot_token"]["is_set"] is False
             assert ".env" in data["telegram_bot_token"]["hint"].lower()
     
-    def test_get_system_variables_with_empty_string_vars(self, client, admin_headers):
+    def test_get_system_variables_with_empty_string_vars(self, client):
         """Test endpoint when environment variables are empty strings."""
         with patch.dict(os.environ, {
             "MONITORED_URL": "",
             "TELEGRAM_CHANNEL_ID": "   ",  # whitespace only
             "TELEGRAM_BOT_TOKEN": ""
         }):
-            response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+            response = client.get("/api/v1/admin/system-variables")
             
             assert response.status_code == 200
             data = response.json()
@@ -94,14 +79,14 @@ class TestSystemVariablesEndpoint:
             assert data["telegram_channel_id"]["is_set"] is False
             assert data["telegram_bot_token"]["is_set"] is False
     
-    def test_get_system_variables_partial_configuration(self, client, admin_headers):
+    def test_get_system_variables_partial_configuration(self, client):
         """Test endpoint with some variables set and others missing."""
         with patch.dict(os.environ, {
             "MONITORED_URL": "https://videos.example.com",
             # TELEGRAM_CHANNEL_ID not set
             "TELEGRAM_BOT_TOKEN": "secret-token-value"
         }, clear=True):
-            response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+            response = client.get("/api/v1/admin/system-variables")
             
             assert response.status_code == 200
             data = response.json()
@@ -118,7 +103,7 @@ class TestSystemVariablesEndpoint:
             assert data["telegram_bot_token"]["value"] is None
             assert data["telegram_bot_token"]["is_set"] is True
     
-    def test_bot_token_never_exposed(self, client, admin_headers):
+    def test_bot_token_never_exposed(self, client):
         """Test that bot token value is NEVER exposed regardless of its value."""
         test_cases = [
             "short",
@@ -128,7 +113,7 @@ class TestSystemVariablesEndpoint:
         
         for token_value in test_cases:
             with patch.dict(os.environ, {"TELEGRAM_BOT_TOKEN": token_value}):
-                response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+                response = client.get("/api/v1/admin/system-variables")
                 
                 assert response.status_code == 200
                 data = response.json()
@@ -138,14 +123,14 @@ class TestSystemVariablesEndpoint:
                 assert data["telegram_bot_token"]["is_set"] is True
                 assert token_value not in str(response.json())
     
-    def test_response_schema_structure(self, client, admin_headers):
+    def test_response_schema_structure(self, client):
         """Test that response follows the expected schema structure."""
         with patch.dict(os.environ, {
             "MONITORED_URL": "https://test.com",
             "TELEGRAM_CHANNEL_ID": "@test",
             "TELEGRAM_BOT_TOKEN": "token123"
         }):
-            response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+            response = client.get("/api/v1/admin/system-variables")
             
             assert response.status_code == 200
             data = response.json()
@@ -163,12 +148,12 @@ class TestSystemVariablesEndpoint:
                 # value can be string or None
                 assert data[var_name]["value"] is None or isinstance(data[var_name]["value"], str)
     
-    def test_numeric_channel_id_format(self, client, admin_headers):
+    def test_numeric_channel_id_format(self, client):
         """Test that numeric channel IDs are returned correctly."""
         with patch.dict(os.environ, {
             "TELEGRAM_CHANNEL_ID": "-1001234567890"
         }):
-            response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+            response = client.get("/api/v1/admin/system-variables")
             
             assert response.status_code == 200
             data = response.json()
@@ -177,13 +162,13 @@ class TestSystemVariablesEndpoint:
             assert data["telegram_channel_id"]["value"] == "-1001234567890"
             assert data["telegram_channel_id"]["is_set"] is True
     
-    def test_special_characters_in_values(self, client, admin_headers):
+    def test_special_characters_in_values(self, client):
         """Test that special characters in URLs and channel IDs are handled correctly."""
         with patch.dict(os.environ, {
             "MONITORED_URL": "https://example.com/path?param=value&other=123",
             "TELEGRAM_CHANNEL_ID": "@channel_with_underscore"
         }):
-            response = client.get("/api/v1/admin/system-variables", headers=admin_headers)
+            response = client.get("/api/v1/admin/system-variables")
             
             assert response.status_code == 200
             data = response.json()

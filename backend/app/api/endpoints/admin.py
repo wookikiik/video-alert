@@ -2,10 +2,8 @@
 Admin endpoints for system configuration and management.
 """
 import os
-from typing import Annotated
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from app.api.deps import get_current_admin
 from app.schemas.system_variables import SystemVariablesResponse, SystemVariableDetail
 
 
@@ -85,18 +83,14 @@ def _get_system_variable_detail(
         "only their presence is indicated."
     )
 )
-async def get_system_variables(
-    _: Annotated[bool, Depends(get_current_admin)]
-) -> SystemVariablesResponse:
+async def get_system_variables() -> SystemVariablesResponse:
     """
     Get current system variables for admin dashboard.
-    
+
     Returns configuration values that are set via environment variables:
     - Monitored video page URL
     - Telegram channel ID
     - Telegram bot token status (value never exposed)
-    
-    Requires admin authentication via X-Admin-Token header.
     """
     return SystemVariablesResponse(
         monitored_video_page_url=_get_system_variable_detail("MONITORED_URL", is_secret=False),

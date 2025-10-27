@@ -16,13 +16,10 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
-interface SystemVariable {
-  label: string;
-  value: string | null;
-  configured: boolean;
-  type: "text" | "password";
-}
+import {
+  fetchSystemVariables,
+  type SystemVariable,
+} from "@/lib/api/system-variables";
 
 export default function SystemVariablesPage() {
   const [loading, setLoading] = useState(true);
@@ -30,26 +27,7 @@ export default function SystemVariablesPage() {
   const [visiblePasswords, setVisiblePasswords] = useState<Set<number>>(
     new Set()
   );
-  const [variables, setVariables] = useState<SystemVariable[]>([
-    {
-      label: "Monitoring Video Page URL",
-      value: "https://example.com/monitoring",
-      configured: true,
-      type: "text",
-    },
-    {
-      label: "Telegram Channel ID",
-      value: null,
-      configured: false,
-      type: "text",
-    },
-    {
-      label: "Telegram Bot Token",
-      value: "1234567890",
-      configured: true,
-      type: "password",
-    },
-  ]);
+  const [variables, setVariables] = useState<SystemVariable[]>([]);
 
   const copyToClipboard = (text: string | null) => {
     if (!text) return;
@@ -76,30 +54,20 @@ export default function SystemVariablesPage() {
     setError(false);
 
     try {
-      // TODO: Replace with actual API call
-      const response = await fetch("/api/v1/admin/system-variables");
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch system variables");
-      }
-
-      const data = await response.json();
-      setVariables(data.variables);
+      const data = await fetchSystemVariables();
+      setVariables(data);
+      toast.success("System variables refreshed");
     } catch (err) {
       console.error("Error fetching system variables:", err);
       setError(true);
+      toast.error("Failed to load system variables");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    // Initial load - simulate API call
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 500);
-
-    return () => clearTimeout(timer);
+    handleRefresh();
   }, []);
 
   return (
