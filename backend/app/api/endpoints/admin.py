@@ -1,62 +1,34 @@
 """
 Admin endpoints for system configuration and management.
 """
-import os
 from fastapi import APIRouter
 
+from app.core.config import settings
 from app.schemas.system_variables import SystemVariablesResponse, SystemVariableDetail
 
 
 router = APIRouter()
 
 
-def _is_secret_env_var(var_name: str) -> bool:
-    """
-    Check if an environment variable name suggests it contains secret data.
-    
-    Args:
-        var_name: The environment variable name to check
-        
-    Returns:
-        True if the variable name contains 'TOKEN' or 'SECRET'
-    """
-    var_name_upper = var_name.upper()
-    return 'TOKEN' in var_name_upper or 'SECRET' in var_name_upper
-
-
 def _get_system_variable_detail(
     env_var_name: str,
-    is_secret: bool = False
 ) -> SystemVariableDetail:
     """
     Get details about a system environment variable.
-    
+
     Args:
-        env_var_name: The name of the environment variable
+        env_var_name: The name of the environment variable in settings
         is_secret: Whether this variable contains secret data
-        
+
     Returns:
         SystemVariableDetail with value, is_set status, and hint
     """
-    value = os.environ.get(env_var_name)
+    value = getattr(settings, env_var_name, None)
+    if value is not None:
+        value = str(value)
     
     # Check if the variable is set (exists and non-empty)
     is_set = value is not None and value.strip() != ""
-    
-    # For secret variables, never return the value
-    if is_secret:
-        if is_set:
-            return SystemVariableDetail(
-                value=None,
-                is_set=True,
-                hint="Set (value withheld for security)"
-            )
-        else:
-            return SystemVariableDetail(
-                value=None,
-                is_set=False,
-                hint="Not set — update server .env file"
-            )
     
     # For non-secret variables, return the value if set
     if is_set:
@@ -93,7 +65,7 @@ async def get_system_variables() -> SystemVariablesResponse:
     - Telegram bot token status (value never exposed)
     """
     return SystemVariablesResponse(
-        monitored_video_page_url=_get_system_variable_detail("MONITORED_URL", is_secret=False),
-        telegram_channel_id=_get_system_variable_detail("TELEGRAM_CHANNEL_ID", is_secret=False),
-        telegram_bot_token=_get_system_variable_detail("TELEGRAM_BOT_TOKEN", is_secret=True)
+        monitored_video_page_url=_get_system_variable_detail("MONITORED_URL"),
+        telegram_channel_id=_get_system_variable_detail("TELEGRAM_CHANNEL_ID"),
+        telegram_bot_token=_get_system_variable_detail("TELEGRAM_BOT_TOKEN")
     )
